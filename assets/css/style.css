@@ -1,4 +1,4 @@
-/* CONFIG ========================================================= */
+/* CONFIG ========================================================== */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
 
 * {
@@ -7,11 +7,29 @@
 
 body {
   background-color: #EEF9BF;
+  font-family: 'Roboto', sans-serif;
+}
+
+.stopwatch {
+  position: fixed;
+  width: fit-content;
+  height: fit-content;
+  padding: 20px;
+  right: 5vw;
+  top: 5vh;
+  z-index: 1;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
 }
 
 /* HEADER ========================================================== */
 h1 {
-  font-family: 'Roboto', sans-serif;
   font-size: 56px;
   color: #75B79E;
   margin: 50px;
@@ -58,15 +76,15 @@ img {
   transform: rotateY(180deg);
 }
 
-.card:hover .back {
+.selected .back {
   transform: rotateY(0deg);
 }
 
-.card:hover .front {
+.selected .front {
   transform: rotateY(-180deg);
 }
 
-/* MEDIA QUERY ==================================================== */
+/* MEDIA QUERY ===================================================== */
 /* MOBILE */
 @media (max-width: 640px) {
   h1 {
