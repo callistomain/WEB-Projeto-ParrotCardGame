@@ -39,6 +39,7 @@ h1 {
 /* MAIN ============================================================ */
 main {
   margin: 0 15vw;
+  margin-bottom: 64px;
   display: flex;
   flex-wrap: wrap;
   gap: 45px;
@@ -63,6 +64,7 @@ main {
   display: flex;
   align-items: center;
 
+  -webkit-backface-visibility: hidden; /* Safari */
   backface-visibility: hidden;
   transition: transform 0.5s;
   transform-style: preserve-3d;

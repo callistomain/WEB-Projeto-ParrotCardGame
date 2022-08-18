@@ -2,36 +2,33 @@
 const main = document.querySelector("main");
 const stopwatch = document.querySelector(".stopwatch");
 const delay = 100; // milliseconds (ms)
-let time, found, plays, size, interval;
-let deck = [1,2,3,4,5,6,7];
+const deck = [1,2,3,4,5,6,7];
+let time, pairs, plays, size, interval;
 startGame();
 
 // Logic ====================================================================
 function startGame() {
-    main.replaceChildren();
-    let start = true;
-    let placement = [];
-
     // Reset statistics
-    [time, found, plays] = [0, 0, 0];
+    [time, pairs, plays] = [0, 0, 0];
     interval = setInterval(updateWatch, delay);
     
-    // REFACTOR ??
     // Prompt (game match size)
-    while (start) {
+    while (true) {
         size = +prompt("Escolha a quantidade de cartas da partida (de 4 a 14, apenas números pares).");
-        if (isNaN(size)) alert("Não permitido. Tente digitar apenas números pares, de 4 a 14");
-        else if (size < 4 || size > 14 || size % 2 != 0) alert("Não permitido. Tente digitar apenas números pares, de 4 a 14");
-        else start = false;
+        if (size < 4 || size > 14 || size % 2 != 0) alert("Não permitido. Tente digitar apenas números pares, de 4 a 14");
+        else break;
     } size /= 2;
     
     // Shuffle (deck and placements)
+    const placement = [];
     deck.sort(() => Math.random() - 0.5);
     for (let i = 0; i < size; i++) placement.push(deck[i], deck[i]);
     placement.sort(() => Math.random() - 0.5);
 
     // Populate DOM
-    placement.forEach(e => main.appendChild(createCard(e)));
+    const fragment = document.createDocumentFragment();
+    placement.forEach(e => fragment.appendChild(createCard(e)));
+    main.replaceChildren(fragment);
 }
 
 // DOM
@@ -60,38 +57,42 @@ function createCard(i) {
 }
 
 // Game Logic ===============================================================
-let cards, wait = false;
+let cards = [];
+let wait = false;
+
 function selectCard() {
     if (wait) return;
+    if (this.classList.contains("selected")) return;
+
     this.classList.add("selected");
+    cards.push(this);
     
-    cards = document.querySelectorAll(".selected:not(.found)");
-    if (cards.length == 2) {
-        const cardsEqual = (cards[0].id === cards[1].id);
-        if (cardsEqual) resolveGame();
-        else waitToPlay(1);
-        plays++;
+    if (cards.length == 2) resolvePlay();
+}
+
+function resolvePlay() {
+    const pairEqual = (cards[0].id === cards[1].id);
+    plays++;
+
+    if (pairEqual) {
+        pairs++;
+        cards.length = 0;
+        if (pairs == size) setTimeout(gameOver, 10);
+    } else {
+        waitToPlay(1);
     }
 }
 
-function resolveGame() {
-    cards.forEach(e => e.classList.add("found"));
-    found++;
+function gameOver() {
+    let replay;
+    clearInterval(interval);
+    alert(`Você ganhou em ${plays} jogadas com um tempo de ${(time/1000).toFixed(1)} segundos!`);
 
-    // REFACTOR
-    // Game Over
-    if (found == size) {
-        clearInterval(interval);
-        setTimeout(() => {
-            let replay;
-            alert(`Você ganhou em ${plays} jogadas com um tempo de ${(time/1000).toFixed(1)} segundos!`);
-            while (true) {
-                replay = prompt("Quer jogar novamente? (\"sim\" ou \"não\")");
-                if (replay === "sim") return startGame();
-                else if (replay === "não") return;
-                else alert("Resposta inválida. Tente apenas com \"sim\" ou \"não\".");
-            }
-        }, 10);
+    while (true) {
+        replay = prompt("Quer jogar novamente? (\"sim\" ou \"não\")");
+        if (replay === "sim") return startGame();
+        else if (replay === "não") return;
+        else alert("Resposta inválida. Tente apenas com \"sim\" ou \"não\".");
     }
 }
 
@@ -104,6 +105,7 @@ function waitToPlay(time) {
 function stopWait() {
     wait = false;
     cards.forEach(e => e.classList.remove("selected"));
+    cards.length = 0;
 }
 
 function updateWatch() {
