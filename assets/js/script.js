@@ -86,7 +86,7 @@ function resolvePlay() {
 function gameOver() {
     let replay;
     clearInterval(interval);
-    alert(`Você ganhou em ${plays} jogadas com um tempo de ${(time/1000).toFixed(1)} segundos!`);
+    alert(`Você ganhou em ${plays*2} jogadas com um tempo de ${(time/1000).toFixed(1)} segundos!`);
 
     while (true) {
         replay = prompt("Quer jogar novamente? (\"sim\" ou \"não\")");
